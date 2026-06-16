@@ -1,1 +1,91 @@
+import time
+import sys
 
+def measureTime(func, vec):
+    start = time.time()
+    func(vec)
+    end = time.time()
+    return (end - start) * 1000
+
+def getUserInput():
+    while True:
+        try:
+            value = int(input("Enter the size of the array: "))
+            if value <= 0:
+                print("Invalid input! Please enter a positive number: ")
+                continue
+            return value
+        except ValueError:
+            print("Invalid input! Please enter a positive number: ")
+
+def createArray(size):
+    vec = []
+    for i in range(size):
+        vec.append(i)
+    return vec
+
+def removeElements(vec):
+    while len(vec) > 0:
+        vec.pop()
+
+def main():
+    size = getUserInput()
+    numbers = createArray(size)
+    initial_memory_bytes = sys.getsizeof(numbers)
+    timeTaken = measureTime(removeElements, numbers)
+    final_memory_bytes = sys.getsizeof(numbers)
+    
+    print(f"\n--- Результаты для массива из {size} элементов ---")
+    print(f"Time taken to remove elements: {timeTaken:.4f} ms")
+    print(f"Initial memory size (allocated): {initial_memory_bytes / (1024 * 1024):.4f} MB")
+    print(f"Final memory size (after pop): {final_memory_bytes / (1024 * 1024):.4f} MB")
+
+if __name__ == "__main__":
+    main()
+
+
+1 лаба, график
+
+
+import time
+import sys
+import matplotlib.pyplot as plt
+from Akimova_1 import createArray, removeElements, measureTime
+
+def collect_data():
+    sizes = [10, 100, 1000, 10000, 100000, 500000, 1000000, 3000000, 5000000, 10000000]
+    times = []
+    
+    print("Запуск серии замеров...")
+    for size in sizes:
+        arr = createArray(size)
+        time_taken = measureTime(removeElements, arr)
+        times.append(time_taken)
+        print(f"Размер: {size:<10} | Время: {time_taken:.4f} мс")
+        
+    return sizes, times
+
+def build_plot(sizes, times):
+    plt.figure(figsize=(10, 6))
+
+    plt.plot(sizes, times, marker='o', color='blue', linestyle='-', linewidth=2, label='Эмпирический замер')
+    
+    plt.xscale('log')
+    
+    plt.title('Зависимость времени удаления элементов с конца массива от его размера', fontsize=14, fontweight='bold', pad=15)
+    plt.xlabel('Размер массива (n, элементов)', fontsize=12)
+    plt.ylabel('Суммарное время удаления (мс)', fontsize=12)
+    
+    plt.grid(True, which="both", linestyle="--", alpha=0.6)
+    plt.legend(fontsize=11)
+
+    plt.tight_layout()
+
+    plt.savefig('performance_graph.png', dpi=300)
+    print("\nГрафик успешно сохранен в файл 'performance_graph.png'!")
+
+    plt.show()
+
+if __name__ == "__main__":
+    sizes, times = collect_data()
+    build_plot(sizes, times)
