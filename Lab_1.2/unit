@@ -1,0 +1,43 @@
+import unittest
+from Akimova_1 import createArray, removeElements
+
+class TestArrayPerformance(unittest.TestCase):
+
+    def test_CreateArraySize(self):
+        size = 5
+        arr = createArray(size)
+        self.assertEqual(size, len(arr), "Array size should match input size")
+
+    def test_CreateArrayValues(self):
+        arr = createArray(5)
+        for i in range(5):
+            self.assertEqual(i, arr[i], "Array values should be sequential from 0")
+
+    def test_RemoveElements(self):
+        arr = createArray(10)
+        removeElements(arr)
+        self.assertEqual(len(arr), 0, "Array should be empty after removeElements")
+
+    def test_RemoveEmptyArray(self):
+        arr = []
+        removeElements(arr)
+        self.assertEqual(len(arr), 0, "Removing from an empty array should not cause issues")
+
+    def test_OneMillion(self):
+        size = 1000000
+        arr = createArray(size)
+        self.assertEqual(size, len(arr), "Array size should match input size for 1 million")
+
+        removeElements(arr)
+        self.assertEqual(len(arr), 0, "Array should be empty after removeElements for 1 million elements")
+
+    def test_TenMillion(self):
+        size = 10000000
+        arr = createArray(size)
+        self.assertEqual(size, len(arr), "Array size should match input size for 10 million")
+
+        removeElements(arr)
+        self.assertEqual(len(arr), 0, "Array should be empty after removeElements for 10 million elements")
+
+if __name__ == '__main__':
+    unittest.main()
